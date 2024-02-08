@@ -1,0 +1,65 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+game:GetService('RunService').Stepped:Connect(function()
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid:ChangeState(11)
+    end
+end)
+
+mouse.KeyDown:connect(function(key)
+    if key == "f" then
+        game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Flying")
+    end
+end)
+
+local function morphEnemies()
+    for _, enemy in ipairs(game.Workspace:GetChildren()) do
+        if enemy:IsA("Model") and enemy:FindFirstChild("Humanoid") then
+            -- Morphing logic goes here
+        end
+    end
+end
+
+local UIS = game:GetService("UserInputService")
+local frame = script.Parent
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        updateInput(input)
+    end
+end)
+
+local function toggleSwitch()
+    -- Toggle logic for the switch next to posts
+end
